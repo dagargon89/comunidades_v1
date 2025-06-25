@@ -42,7 +42,7 @@ function isAuthenticated() {
 // Función para redirigir si no está autenticado
 function requireAuth() {
     if (!isAuthenticated()) {
-        header('Location: /proyectos/login.php');
+        header('Location: /auth/login.php');
         exit();
     }
 }
