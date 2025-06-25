@@ -1,0 +1,12 @@
+/
+|-- /actividades/
+|-- /auth/              <-- NUEVO (Para login, registro, etc.)
+|-- /beneficiarios/
+|-- /componentes/       <-- NUEVO
+|-- /ejes/              <-- NUEVO
+|-- /includes/
+|-- /organizaciones/    <-- NUEVO
+|-- /productos/         <-- (Reemplaza a la antigua carpeta /proyectos/)
+|-- /usuarios/          <-- NUEVO (Para la gestión de perfiles)
+|-- index.php           (El futuro Dashboard)
+|-- gantt.php
