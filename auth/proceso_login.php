@@ -32,7 +32,19 @@ try {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_nombre'] = $user['nombre'];
         $_SESSION['user_email'] = $user['email'];
-        // Aquí podríamos cargar los roles también
+
+        // --- BLOQUE ACTUALIZADO Y CRUCIAL ---
+        // Cargar los roles del usuario en la sesión
+        $stmt_roles = $pdo->prepare("
+            SELECT r.nombre 
+            FROM roles r 
+            JOIN usuario_roles ur ON r.id = ur.rol_id 
+            WHERE ur.usuario_id = ?
+        ");
+        $stmt_roles->execute([$user['id']]);
+        $roles_usuario = $stmt_roles->fetchAll(PDO::FETCH_COLUMN);
+        $_SESSION['user_roles'] = $roles_usuario; // Guardamos un array con los nombres de los roles
+        // --- FIN DEL BLOQUE ACTUALIZADO ---
 
         // 6. Redirigir al dashboard principal
         header('Location: /index.php');

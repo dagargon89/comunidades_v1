@@ -1,15 +1,20 @@
 <?php
 require_once '../includes/config.php';
-requireAuth(); // Aseguramos que solo usuarios logueados puedan acceder
+requireAuth(); 
 
 $user_id = $_SESSION['user_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
-    $stmt->execute([$user_id]);
-    $usuario = $stmt->fetch();
+    // Obtener datos del usuario
+    $stmt_user = $pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
+    $stmt_user->execute([$user_id]);
+    $usuario = $stmt_user->fetch();
+
+    // Obtener todas las organizaciones para el desplegable
+    $organizaciones = $pdo->query("SELECT id, nombre FROM organizaciones ORDER BY nombre")->fetchAll();
+
 } catch (PDOException $e) {
-    die("Error al obtener los datos del usuario: " . $e->getMessage());
+    die("Error al obtener los datos: " . $e->getMessage());
 }
 
 $page_title = 'Mi Perfil';
@@ -19,21 +24,38 @@ include '../includes/header.php';
 <h1 class="h2 mb-4">Mi Perfil</h1>
 
 <?php if (isset($_GET['success'])): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($_GET['success']) ?></div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= htmlspecialchars($_GET['success']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <?php endif; ?>
 <?php if (isset($_GET['error'])): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= htmlspecialchars($_GET['error']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <?php endif; ?>
 
 
 <div class="row">
     <div class="col-lg-7 mb-4">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm h-100">
             <div class="card-header"><h3 class="h5 mb-0">Actualizar mis Datos</h3></div>
             <div class="card-body">
                 <form action="update_perfil.php" method="POST">
                     <input type="hidden" name="action" value="update_profile">
                     <div class="row g-3">
+                        <div class="col-12">
+                            <label for="organizacion_id" class="form-label">Organización</label>
+                            <select class="form-select" id="organizacion_id" name="organizacion_id">
+                                <option value="">-- Ninguna --</option>
+                                <?php foreach($organizaciones as $org): ?>
+                                    <option value="<?= $org['id'] ?>" <?= ($org['id'] == $usuario['organizacion_id']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($org['nombre']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="<?= htmlspecialchars($usuario['nombre']) ?>" required>
@@ -68,9 +90,9 @@ include '../includes/header.php';
     </div>
 
     <div class="col-lg-5 mb-4">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm h-100">
              <div class="card-header"><h3 class="h5 mb-0">Cambiar Contraseña</h3></div>
-             <div class="card-body">
+             <div class="card-body d-flex flex-column">
                 <form action="update_perfil.php" method="POST">
                     <input type="hidden" name="action" value="update_password">
                     <div class="mb-3">
@@ -85,7 +107,7 @@ include '../includes/header.php';
                         <label for="confirm_new_password" class="form-label">Confirmar Nueva Contraseña</label>
                         <input type="password" class="form-control" id="confirm_new_password" name="confirm_new_password" required>
                     </div>
-                    <div class="text-end mt-3">
+                    <div class="text-end mt-auto">
                         <button type="submit" class="btn btn-warning">Cambiar Contraseña</button>
                     </div>
                 </form>
