@@ -2,7 +2,7 @@
 // Configuración de la base de datos
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'comunidades_db'); // Base de datos del nuevo proyecto
-define('DB_USER', 'david');
+define('DB_USER', 'root');
 define('DB_PASS', 'Comunica25!');
 
 try {
