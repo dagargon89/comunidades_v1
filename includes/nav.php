@@ -20,6 +20,11 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <?= ($current_page === 'gantt.php') ? 'active' : '' ?>" href="/gantt.php">
+                        <i class="fas fa-chart-gantt me-1"></i>Gantt
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?= ($current_dir === 'organizaciones') ? 'active' : '' ?>" href="/organizaciones/index.php">
                         <i class="fas fa-building me-1"></i>Organizaciones
                     </a>
